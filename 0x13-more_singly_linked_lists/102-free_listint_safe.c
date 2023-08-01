@@ -1,80 +1,65 @@
 #include "lists.h"
-
-size_t looped_listint_count(listint_t *head);
-size_t free_listint_safe(listint_t **h);
-
 /**
- * looped_listint_count - Counts the number of unique nodes in a looped listint_t linked list.
- * @head: A pointer to the head of the listint_t to check.
- * Return: If the list is not looped - 0. Otherwise - the number of unique nodes in the list.
+ * find_listint_loop_helpr - finds a loop
+ *
+ * @head: pinter
+ *
+ * Return: printer
  */
-size_t looped_listint_count(listint_t *head)
+listint_t *find_listint_loop_helpr(listint_t *head)
 {
-	listint_t *tortoise, *hare;
-	size_t nodes = 1;
+	listint_t *p, *e;
 
-	if (head == NULL || head->next == NULL)
-	return (0);
-	tortoise = head->next;
-	hare = (head->next)->next;
-	while (hare)
+	if (head == NULL)
 	{
-	if (tortoise == hare)
+		return (NULL);
+	}
+	for (e = head->next; e != NULL; e = e->next)
 	{
-	tortoise = head;
-	while (tortoise != hare)
-	{
-	nodes++;
-	tortoise = tortoise->next;
-	hare = hare->next;
+		if (e == e->next)
+			return (e);
+		for (p = head; p != e; p = p->next)
+			if (p == e->next)
+				return (e->next);
 	}
-	tortoise = tortoise->next;
-	while (tortoise != hare)
-	{
-	nodes++;
-	tortoise = tortoise->next;
-	}
-	return (nodes);
-	}
-	tortoise = tortoise->next;
-	hare = (hare->next)->next;
-	}
-	return (0);
+	return (NULL);
 }
 
 /**
- * free_listint_safe - Frees a listint_t list safely (e.g.can free lists containing loops)
- * @h: A pointer to the address of the head of the listint_t list.
- * Return: The size of the list that was freed.
+ * free_listint_safe - frees a listint list
  *
- * Description: The function sets the head to NULL.
+ * @h: head of list
+ *
+ * Return: number of nodes freed
  */
 size_t free_listint_safe(listint_t **h)
 {
-	listint_t *tmp;
-	size_t nodes, index;
+	listint_t *n, *loop;
+	size_t len;
+	int l = 1;
 
-	nodes = looped_listint_count(*h);
+	if (h == NULL || *h == NULL)
+		return (0);
 
-	if (nodes == 0)
+	loop = find_listint_loop_helpr(*h);
+	for (len = 0; (*h != loop || l) && *h != NULL; *h = n)
 	{
-	for (; h != NULL && *h != NULL; nodes++)
-	{
-	tmp = (*h)->next;
-	free(*h);
-	*h = tmp;
-	}
-	}
-	else
-	{
-	for (index = 0; index < nodes; index++)
-	{
-	tmp = (*h)->next;
-	free(*h);
-	*h = tmp;
+		len++;
+		n = (*h)->next;
+		if (*h == loop && l)
+		{
+			if (loop == loop->next)
+			{
+				free(*h);
+				break;
+			}
+			len++;
+			n = n->next;
+			free((*h)->next);
+			l = 0;
+		}
+		free(*h);
 	}
 	*h = NULL;
-	}
-	h = NULL;
-	return (nodes);
+	return (len);
 }
