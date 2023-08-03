@@ -1,45 +1,23 @@
 #include "main.h"
-#include <string.h>
-/**/
-unsigned int _pow(int base, int pow);
 /**
- * binary_to_uint - changes binary number to unsigned int.
- * @b: array pointer to binary string.
- * Return: the unsigned int number, or 0.
+ * binary_to_uint - change number to unsigned int.
+ * @b: pointer to the string of 0's and 1's
+ * Return: an unsigned int number
  */
 unsigned int binary_to_uint(const char *b)
 {
-	unsigned int dismal, len, i;
-
-	dismal = 0;
-	i = 0;
+	int i;
+	unsigned int num = 0;
 	if (!b)
-	return (0);
-	len = strlen(b);
-	while (b[i])
+		return (0);
+	for (i = 0; *(b + i) != '\0'; i++)
 	{
-	if (!(b[i] == '0' ||  b[i] == '1'))
+	if (*(b + i)  == '1')
+	num = (num << 1) | 1;/*insert 1 and make displacement*/
+	else if (*(b + i) == '0')
+	num <<= 1; /*to only displace*/
+	else
 	return (0);
-	dismal = dismal + (b[i] - '0') * _pow(2, len - i - 1);
-	i++;
 	}
-	return (dismal);
-}
-/**
- * _pow - to calculate the power
- * @base: base
- * @pow: power
- * Return: outcome
- */
-unsigned int _pow(int base, int pow)
-{
-	unsigned int result;
-	if (pow == 0)
-	return (1);
-	if (pow == 1)
-	return (base);
-	result = base;
-	while (--pow)
-	result *= base;
-	return (result);
+	return (num);
 }
