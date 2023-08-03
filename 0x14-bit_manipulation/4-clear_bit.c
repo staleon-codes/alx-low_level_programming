@@ -1,5 +1,5 @@
 #include "main.h"
-
+/* */
 unsigned long int _pow(int base, int pow);
 /**
  * clear_bit -  changes the bit value to 0 of a given index.
